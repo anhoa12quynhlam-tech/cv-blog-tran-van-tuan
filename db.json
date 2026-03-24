@@ -1,0 +1,36 @@
+{
+  "posts": [
+    {
+      "id": "1",
+      "title": "Học React cho người mới bắt đầu",
+      "excerpt": "React là một thư viện JavaScript phổ biến để xây dựng giao diện người dùng. Trong bài viết này, chúng ta sẽ tìm hiểu những kiến thức cơ bản nhất.",
+      "content": "React là một thư viện JavaScript mã nguồn mở được phát triển bởi Facebook. Nó cho phép các nhà phát triển tạo ra các ứng dụng web phức tạp với giao diện người dùng linh hoạt và hiệu quả. Điểm mạnh của React chính là cơ chế Virtual DOM và kiến trúc component.",
+      "author": "Admin",
+      "date": "2024-03-20"
+    },
+    {
+      "id": "2",
+      "title": "10 tips hữu ích với Tailwind CSS",
+      "excerpt": "Tailwind CSS giúp việc thiết kế giao diện trở nên nhanh chóng hơn bao giờ hết. Khám phá 10 mẹo nhỏ giúp bạn tối ưu quy trình làm việc.",
+      "content": "Tailwind CSS là một framework CSS ưu tiên tiện ích (utility-first). Thay vì viết các lớp CSS tùy chỉnh, bạn sử dụng các lớp có sẵn trực tiếp trong HTML. Điều này giúp code sạch hơn và dễ bảo trì hơn nếu được sử dụng đúng cách.",
+      "author": "Admin",
+      "date": "2024-03-21"
+    },
+    {
+      "id": "3",
+      "title": "Xu hướng Web Development năm 2024",
+      "excerpt": "Thế giới web luôn thay đổi không ngừng. Hãy cùng điểm qua những công nghệ và xu hướng nổi bật đang định hình tương lai của ngành lập trình web.",
+      "content": "Năm 2024 chứng kiến sự bùng nổ của AI trong phát triển web, sự phổ biến của các framework như Next.js, Remix và sự chú trọng vào hiệu năng ứng dụng (Core Web Vitals). Việc học hỏi các công nghệ mới là điều bắt buộc đối với mọi lập trình viên.",
+      "author": "Admin",
+      "date": "2024-03-22"
+    },
+    {
+      "id": "4",
+      "title": "Tương lai của AI trong lập trình",
+      "excerpt": "AI đang thay đổi cách chúng ta viết code. Liệu AI sẽ thay thế lập trình viên hay trở thành một trợ thủ đắc lực? Hãy cùng thảo luận về chủ đề này.",
+      "content": "Các công cụ như GitHub Copilot hay ChatGPT đã thay đổi cách chúng ta tiếp cận việc giải quyết vấn đề. Tuy nhiên, khả năng tư duy logic và sáng tạo của con người vẫn là yếu tố then chốt. AI sẽ giúp chúng ta làm việc nhanh hơn, nhưng không thể thay thế hoàn toàn vai trò của người kỹ sư phần mềm.",
+      "author": "Admin",
+      "date": "2024-03-23"
+    }
+  ]
+}
