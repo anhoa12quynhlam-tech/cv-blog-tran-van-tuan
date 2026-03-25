@@ -10,7 +10,7 @@ export default defineConfig({
       // Proxy /api/* → json-server at :3001
       // e.g. GET /api/posts → http://localhost:3001/posts
       "/api": {
-        target: "http://localhost:3001",
+        target: "https://json-db-data.onrender.com",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
       },
