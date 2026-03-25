@@ -22,12 +22,12 @@ async function request(path, options = {}) {
     headers: { "Content-Type": "application/json", ...options.headers },
     ...options,
   });
+
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`API ${res.status}: ${text}`);
+    throw new Error(`API ${res.status}`);
   }
-  const text = await res.text();
-  return text ? JSON.parse(text) : null;
+
+  return await res.json();
 }
 
 export const api = {
