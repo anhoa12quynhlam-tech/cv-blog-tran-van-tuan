@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth, UserButton } from '@clerk/clerk-react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth, UserButton } from "@clerk/clerk-react";
 import {
-  ArrowLeft, PenSquare, Sun, Moon, Search,
-  Calendar, Clock, Tag, Wifi, WifiOff
-} from 'lucide-react';
-import { useBlog } from '../context/BlogContext';
+  ArrowLeft,
+  PenSquare,
+  Sun,
+  Moon,
+  Search,
+  Calendar,
+  Clock,
+  Tag,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
+import { useBlog } from "../context/BlogContext";
 
 function SkeletonCard() {
   return (
@@ -25,16 +33,20 @@ function SkeletonCard() {
 export default function BlogList({ isDarkMode, toggleDarkMode }) {
   const { posts, loading, serverOnline } = useBlog();
   const { isSignedIn } = useAuth();
-  const [search, setSearch] = useState('');
-  const [activeTag, setActiveTag] = useState('All');
+  const [search, setSearch] = useState("");
+  const [activeTag, setActiveTag] = useState("All");
 
-  const allTags = ['All', ...new Set(posts.flatMap(p => p.tags || []))];
+  const allTags = ["All", ...new Set(posts.flatMap((p) => p.tags || []))];
 
-  const filtered = posts.filter(post => {
+  const filtered = posts.filter((post) => {
     const matchSearch =
       post.title.toLowerCase().includes(search.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(search.toLowerCase());
-    const matchTag = activeTag === 'All' || (post.tags || []).includes(activeTag);
+    //const matchTag = activeTag === 'All' || (post.tags || []).includes(activeTag);
+    const matchTag =
+      activeTag === "All" ||
+      !post.tags || // 👉 FIX
+      (post.tags || []).includes(activeTag);
     return matchSearch && matchTag;
   });
 
@@ -44,22 +56,29 @@ export default function BlogList({ isDarkMode, toggleDarkMode }) {
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-100 dark:border-zinc-800">
         <div className="container-custom py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/" className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">
+            <Link
+              to="/"
+              className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+            >
               <ArrowLeft size={18} />
               <span className="font-medium hidden sm:inline">Portfolio</span>
             </Link>
             <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-700" />
-            <span className="font-bold text-zinc-900 dark:text-zinc-50 text-lg">Blog</span>
+            <span className="font-bold text-zinc-900 dark:text-zinc-50 text-lg">
+              Blog
+            </span>
           </div>
           <div className="flex items-center gap-3">
             {/* Server status badge */}
-            <span className={`hidden sm:flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
-              serverOnline
-                ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'
-                : 'bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400'
-            }`}>
+            <span
+              className={`hidden sm:flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
+                serverOnline
+                  ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400"
+                  : "bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400"
+              }`}
+            >
               {serverOnline ? <Wifi size={11} /> : <WifiOff size={11} />}
-              {serverOnline ? 'Server online' : 'Offline (db.json)'}
+              {serverOnline ? "Server online" : "Offline (db.json)"}
             </span>
 
             {isSignedIn ? (
@@ -74,7 +93,10 @@ export default function BlogList({ isDarkMode, toggleDarkMode }) {
                 <UserButton afterSignOutUrl="/" />
               </>
             ) : (
-              <Link to="/login" className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors">
+              <Link
+                to="/login"
+                className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+              >
                 Admin Login
               </Link>
             )}
@@ -96,18 +118,22 @@ export default function BlogList({ isDarkMode, toggleDarkMode }) {
             Bài viết & Chia sẻ
           </h1>
           <p className="text-xl text-zinc-600 dark:text-zinc-400">
-            Tôi viết về lập trình web, thiết kế và những điều tôi học được trên hành trình.
+            Tôi viết về lập trình web, thiết kế và những điều tôi học được trên
+            hành trình.
           </p>
         </div>
 
         {/* Search */}
         <div className="relative max-w-xl mb-6">
-          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+          <Search
+            size={18}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400"
+          />
           <input
             type="text"
             placeholder="Tìm kiếm bài viết..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-11 pr-4 py-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-50 transition-all"
           />
         </div>
@@ -115,14 +141,14 @@ export default function BlogList({ isDarkMode, toggleDarkMode }) {
         {/* Tags */}
         {allTags.length > 1 && (
           <div className="flex flex-wrap gap-2 mb-10">
-            {allTags.map(tag => (
+            {allTags.map((tag) => (
               <button
                 key={tag}
                 onClick={() => setActiveTag(tag)}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                   activeTag === tag
-                    ? 'bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-900'
-                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                    ? "bg-zinc-900 dark:bg-zinc-50 text-zinc-50 dark:text-zinc-900"
+                    : "bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700"
                 }`}
               >
                 {tag}
@@ -134,7 +160,9 @@ export default function BlogList({ isDarkMode, toggleDarkMode }) {
         {/* Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
+            {[1, 2, 3].map((i) => (
+              <SkeletonCard key={i} />
+            ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="text-center py-24 text-zinc-500 dark:text-zinc-400">
@@ -143,7 +171,7 @@ export default function BlogList({ isDarkMode, toggleDarkMode }) {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filtered.map(post => (
+            {filtered.map((post) => (
               <Link
                 key={post.id}
                 to={`/blog/${post.id}`}
@@ -168,9 +196,13 @@ export default function BlogList({ isDarkMode, toggleDarkMode }) {
                   {/* Tags */}
                   {(post.tags || []).length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-3">
-                      {(post.tags || []).slice(0, 2).map(tag => (
-                        <span key={tag} className="flex items-center gap-1 text-xs font-medium px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-full">
-                          <Tag size={10} />{tag}
+                      {(post.tags || []).slice(0, 2).map((tag) => (
+                        <span
+                          key={tag}
+                          className="flex items-center gap-1 text-xs font-medium px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 rounded-full"
+                        >
+                          <Tag size={10} />
+                          {tag}
                         </span>
                       ))}
                     </div>
@@ -191,14 +223,17 @@ export default function BlogList({ isDarkMode, toggleDarkMode }) {
                     {post.date && (
                       <span className="flex items-center gap-1.5">
                         <Calendar size={12} />
-                        {new Date(post.date).toLocaleDateString('vi-VN', {
-                          day: 'numeric', month: 'short', year: 'numeric'
+                        {new Date(post.date).toLocaleDateString("vi-VN", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
                         })}
                       </span>
                     )}
                     {post.readTime && (
                       <span className="flex items-center gap-1.5">
-                        <Clock size={12} />{post.readTime} đọc
+                        <Clock size={12} />
+                        {post.readTime} đọc
                       </span>
                     )}
                   </div>
