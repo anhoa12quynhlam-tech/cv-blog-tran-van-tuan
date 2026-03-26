@@ -1,5 +1,5 @@
 import React from "react";
-import heroImg from "../assets/Pic.png";
+import Pic from "../assets/Pic.png";
 
 export default function About() {
   const highlights = [
@@ -20,13 +20,13 @@ export default function About() {
             <span className="badge">About me</span>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-16 items-start">
+          <div className="flex flex-col-reverse md:flex-row gap-16 items-start">
             {/* Photo */}
-            <div className="flex-1 w-full max-w-md mx-auto relative h-[480px]">
+            <div className="flex-1 w-full max-w-md mx-auto relative h-80 md:h-[480px]">
               <div className="absolute inset-0 bg-zinc-200 dark:bg-zinc-800 rotate-6 rounded-sm transition-transform duration-500 hover:rotate-0" />
               <div className="absolute inset-0 border-8 border-white dark:border-zinc-950 overflow-hidden shadow-xl rounded-sm">
                 <img
-                  src={heroImg}
+                  src={Pic}
                   alt="Sagar Shah"
                   className="w-full h-full object-cover object-top"
                   onError={(e) => {

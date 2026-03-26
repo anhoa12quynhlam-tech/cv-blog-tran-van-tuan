@@ -1,105 +1,82 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
-import { api } from "../services/api";
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import {
+  getAllPosts,
+  getPostById,
+  createPost  as apiCreate,
+  updatePost  as apiUpdate,
+  deletePost  as apiDelete,
+} from '../services/api';
 
-// ─── Fallback data đọc thẳng từ db.json ────────────────────────────────────
-// Đây là bản copy của db.json — dùng khi json-server chưa chạy.
-// Khi json-server chạy, data thật từ API sẽ ghi đè lên.
-import DB_FALLBACK from "../../db.json";
+// ============================================================
+//  BlogContext — quản lý state bài viết, gọi API thật
+// ============================================================
 
 const BlogContext = createContext(null);
 
 export function BlogProvider({ children }) {
-  // Khởi tạo ngay bằng data db.json — UI không bao giờ trắng
-  const [posts, setPosts] = useState(DB_FALLBACK.posts);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [serverOnline, setServerOnline] = useState(false);
+  const [posts,   setPosts]   = useState([]);
+  const [loading, setLoading] = useState(true);  // đang fetch lần đầu
+  const [error,   setError]   = useState(null);  // lỗi kết nối server
 
-  // ── Fetch từ json-server, fallback về db.json nếu lỗi ──────────────────
-  const fetchPosts = useCallback(async () => {
+  // ── 1. GET /posts — tải danh sách khi app khởi động ───────
+  useEffect(() => {
+    fetchAllPosts();
+  }, []);
+
+  async function fetchAllPosts() {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.getAllPosts();
-      // json-server có thể trả về [] nếu db rỗng — giữ fallback lúc đó
-      if (Array.isArray(data)) {
-        setPosts(data);
-      }
-      setServerOnline(true);
+      const data = await getAllPosts();          // GET /api/posts
+      setPosts(data);
     } catch (err) {
-      // json-server chưa chạy → dùng fallback db.json, không báo lỗi to
-      console.warn(
-        "[BlogContext] json-server offline, dùng db.json local:",
-        err.message,
-      );
-      setPosts(DB_FALLBACK.posts);
-      setServerOnline(false);
-      setError(
-        "json-server chưa chạy — đang hiển thị dữ liệu offline từ db.json",
-      );
+      setError(err.message);
+      console.error('GET /posts thất bại:', err.message);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }
 
-  useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+  // ── 2. GET /posts/:id — tìm trong state hiện có ───────────
+  // (không cần fetch lại nếu đã có trong danh sách)
+  function getPost(id) {
+    return posts.find((p) => String(p.id) === String(id)) ?? null;
+  }
 
-  // ── Helpers ──────────────────────────────────────────────────────────────
-  const getPost = (id) => posts.find((p) => String(p.id) === String(id));
-
-  const createPost = async (formData) => {
+  // ── 3. POST /posts — tạo bài mới ──────────────────────────
+  async function addPost(formData) {
     const payload = {
       ...formData,
-      date: new Date().toISOString().split("T")[0],
-      readTime: `${Math.max(1, Math.ceil(formData.content.split(" ").length / 200))} min`,
+      date:     new Date().toISOString().split('T')[0],
+      readTime: `${Math.max(1, Math.ceil(formData.content.split(' ').length / 200))} min`,
     };
 
-    if (serverOnline) {
-      const created = await api.createPost(payload);
-      setPosts((prev) => [created, ...prev]);
-      return created;
-    } else {
-      // Offline: chỉ cập nhật state, không ghi vào file
-      const created = { ...payload, id: String(Date.now()) };
-      setPosts((prev) => [created, ...prev]);
-      return created;
-    }
-  };
+    const created = await apiCreate(payload);   // POST /api/posts
+    setPosts((prev) => [created, ...prev]);     // cập nhật state ngay
+    return created;
+  }
 
-  const updatePost = async (id, formData) => {
+  // ── 4. PUT /posts/:id — cập nhật bài ──────────────────────
+  async function editPost(id, formData) {
     const existing = getPost(id);
-    const payload = {
+    const payload  = {
       ...existing,
       ...formData,
-      readTime: `${Math.max(1, Math.ceil(formData.content.split(" ").length / 200))} min`,
+      readTime: `${Math.max(1, Math.ceil(formData.content.split(' ').length / 200))} min`,
     };
 
-    if (serverOnline) {
-      const updated = await api.updatePost(id, payload);
-      setPosts((prev) =>
-        prev.map((p) => (String(p.id) === String(id) ? updated : p)),
-      );
-      return updated;
-    } else {
-      setPosts((prev) =>
-        prev.map((p) => (String(p.id) === String(id) ? payload : p)),
-      );
-      return payload;
-    }
-  };
+    const updated = await apiUpdate(id, payload); // PUT /api/posts/:id
+    setPosts((prev) =>
+      prev.map((p) => String(p.id) === String(id) ? updated : p)
+    );
+    return updated;
+  }
 
-  const deletePost = async (id) => {
-    if (serverOnline) await api.deletePost(id);
+  // ── 5. DELETE /posts/:id — xoá bài ────────────────────────
+  async function removePost(id) {
+    await apiDelete(id);                        // DELETE /api/posts/:id
     setPosts((prev) => prev.filter((p) => String(p.id) !== String(id)));
-  };
+  }
 
   return (
     <BlogContext.Provider
@@ -107,12 +84,12 @@ export function BlogProvider({ children }) {
         posts,
         loading,
         error,
-        serverOnline,
+        // CRUD
         getPost,
-        createPost,
-        updatePost,
-        deletePost,
-        refetch: fetchPosts,
+        createPost: addPost,
+        updatePost: editPost,
+        deletePost: removePost,
+        refetch:    fetchAllPosts,
       }}
     >
       {children}
@@ -122,6 +99,6 @@ export function BlogProvider({ children }) {
 
 export function useBlog() {
   const ctx = useContext(BlogContext);
-  if (!ctx) throw new Error("useBlog must be used within BlogProvider");
+  if (!ctx) throw new Error('useBlog phải được dùng bên trong <BlogProvider>');
   return ctx;
 }
