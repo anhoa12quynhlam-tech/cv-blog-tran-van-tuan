@@ -1,21 +1,5 @@
-/**
- * Blog API service — gọi json-server qua Vite proxy
- *
- * Vite proxy: /api/* → http://localhost:3001/*
- *
- * Endpoints json-server tự sinh từ db.json:
- *   GET    /api/posts          - tất cả bài viết
- *   GET    /api/posts/:id      - 1 bài viết
- *   POST   /api/posts          - tạo mới
- *   PUT    /api/posts/:id      - cập nhật toàn bộ
- *   PATCH  /api/posts/:id      - cập nhật một phần
- *   DELETE /api/posts/:id      - xoá
- *
- * json-server v1 sort syntax: ?_sort=-date (dấu - = descending)
- * json-server v0 sort syntax: ?_sort=date&_order=desc  ← KHÁC NHAU
- */
-
-const BASE = "https://json-db-data.onrender.com";
+const BASE =
+  import.meta.env.VITE_API_URL || "https://json-db-data.onrender.com";
 
 async function request(path, options = {}) {
   const res = await fetch(`${BASE}${path}`, {
