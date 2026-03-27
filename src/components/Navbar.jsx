@@ -19,7 +19,11 @@ export default function Navbar({ isDarkMode, toggleDarkMode }) {
     <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md dark:bg-zinc-950/80 border-b border-zinc-100 dark:border-zinc-800">
       <div className="container-custom py-4">
         <div className="flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+          <Link
+            to="/"
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50"
+          >
             &lt;SS /&gt;
           </Link>
 
